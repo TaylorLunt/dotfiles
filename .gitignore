@@ -60,6 +60,6 @@ flycheck_*.el
 /doom.d.bak/
 
 # Dolphin .directory file
-/.directory
+*.directory*
 
 # End of https://www.toptal.com/developers/gitignore/api/emacs,dotfilessh
