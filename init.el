@@ -21,6 +21,7 @@
 ;; TODO typo.el: in markdown mode only, and toggle with SPC t something
 ;; TODO yascroll
 ;; TODO magithub
+;; TODO magit evil keybindings
 ;; Languages:
 ;; TODO Bash
 ;; TODO C and C++
