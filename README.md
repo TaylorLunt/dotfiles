@@ -10,17 +10,15 @@ I'm currently running Debian on my desktop with i3 and emacs. Everything that ca
 | .Xkeymap     | Defines a few custom changes to the X keymap. Mostly make F15 a modifier key so I can use it as Hyper_R (I have it bound on my Ergodox EZ keyboard). |
 | .bashrc      | Simple bash config which mostly just sets up a few aliases and adds a few things to the path.                                                        |
 | .profile     | Calls .bashrc.                                                                                                                                       |
-| configure.sh | A work-in-progress, but eventually I want this script to completely and idempotently configure a fresh Debian install for me.                        |
+| configure.sh | A (very) work-in-progress, but eventually I want this script to completely and idempotently configure a fresh Debian install for me.                        |
 | make.sh      | Makes symlinks to all of the dotfiles in this repo.                                                                                                  |
 
 -----
 
-## doom emacs stuff
+## emacs stuff
 | File        | Description                                                                                                                                                                                                                                                                   |
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| init.el     | The default doom packages I have enabled. Some stuff I have enabled, but don't use yet, like the RSS stuff.                                                                                                                                                                   |
-| packages.el | Packages which don't come with Doom. They include [emojify](https://github.com/iqbalansari/emacs-emojify) to add emoji support 😂, and [evil-colemak-basics](https://github.com/wbolster/evil-colemak-basics) to provide basic colemak keybindings (though many are missing). |
-| config.el            | My personal emacs config. It includes a lot of remapping to colemak keybindings, as well as [Fira Code](https://github.com/tonsky/FiraCode/wiki/Emacs-instructions).                                                                                                                                                                                                                                                                              |
+| init.el     | My emacs config file. I was using doom emacs, but I switched to vanilla.
 
 -----
 
@@ -36,20 +34,16 @@ I'm currently running Debian on my desktop with i3 and emacs. Everything that ca
 
 -----
 
-## i3 stuff
-In i3 I use i3bar with i3blocks. Blocks come from various repositories, and there are some custom blocks as well.
+## awesome stuff
+I used to use I3 with I3blocks, but now I'm using awesome. Blocks come from various repositories, and there are some custom blocks as well.
 | File            | Description                                       |
 |-----------------|---------------------------------------------------|
-| config          | The main i3 config                                |
-| i3blocks.conf   | The i3blocks config                               |
-| i3lock-pixel.sh | A pixellated i3 lock which I don't currently use. |
+| rc.lua          | The main awesome config                                |
+| themes/powerarrow-dark/theme.lua   | I'm using the powerarrow-dark theme from [awesome-copycats](https://github.com/lcpz/awesome-copycats), modified for a gruvbox color scheme.                               |
 
-### Blocks I use
-Some blocks either come from [i3blocks](https://github.com/vivien/i3blocks) itself, [i3blocks-contrib](https://github.com/vivien/i3blocks-contrib), or [Anachron/i3blocks](https://github.com/Anachron/i3blocks). Blocks of note:
-| Block                 | Description                                                                                                                                   |
-|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| vlc-filename-duration | A block for displaying information about, and controlling, currently playing vlc files, based on the mediaplayer block from i3blocks-contrib. |
-| mail                  | A block showing the number of emails in my gmail inbox.                                                                                       |
-| weather               | A weather block from [here](http://kumarcode.com/Colorful-i3/).                                                                               |
-| curl ipinfo.io/ip     | A good way to get my external ip in my i3bar.                                                                                                 |
-| nordvpn.sh            | A button to connect/disconnect me to Nord VPN.                                                                                                |
+-----
+
+## vivaldi css
+| File | Description |
+|------|-------------|
+| vivaldi_css | css for the vivaldi web browser, which vivaldi has a [setting to load from](https://forum.vivaldi.net/topic/37802/css-modifications-experimental-feature)
