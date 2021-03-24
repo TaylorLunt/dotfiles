@@ -5,13 +5,14 @@
 ;;
 ;; Global:
 ;; TODO use #' instead of ' where appropriate
+;; TODO setup <localleader>
+;; TODO performance: use (gcc)emacs 27+ compiled against native JSON
 ;; Fix:
 ;; TODO get ligatures working in programming modes
 ;; TODO get which-key paging keybindings working
 ;; TODO elisp files are colored incorrectly; some faces are not being set
 ;; TODO hl-todo causes a segfault when enabled for some reason
 ;; TODO org mode: g e to go up to next heading etc.
-;; TODO Failed to install evil-org-agenda: Package "evil-org-agenda-" is unavailable
 ;; Packages:
 ;; TODO LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO LSP: setup debugger (dap-mode)
@@ -22,7 +23,10 @@
 ;; TODO yascroll
 ;; TODO magithub
 ;; TODO magit evil keybindings
-;; Languages:
+;; TODO writegood mode
+;; TODO org-cliplink
+;; TODO hungry-delete or whatever
+;; Languages: (lsp and repl at least)
 ;; TODO Bash
 ;; TODO C and C++
 ;; TODO Elixir (and Erlang)
@@ -37,6 +41,11 @@
 ;; TODO SQL
 ;; TODO Latex; Latex org integration
 ;; TODO XML/YAML/TOML
+;; Ideas:
+;; TODO https://tecosaur.github.io/emacs-config/config.html
+;; TODO https://github.com/wasamasa/dotemacs/blob/master/init.org
+;; TODO https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
+;; TODO https://mstempl.netlify.app/post/beautify-org-mode/
 
 (setq user-full-name "Taylor Lunt"
       user-mail-address "taylorlunt@gmail.com")
@@ -162,12 +171,12 @@
         "h b" '(describe-personal-keybindings :which-key "describe personal keybindings")
         "h c" '(describe-char :which-key "describe char")
         "h e" '(view-echo-area-messages :which-key "show echo")
-        "h f" '(describe-function :which-key "describe function")
+        "h f" '(helpful-function :which-key "describe function")
         "h k" '(describe-key-briefly :which-key "describe key")
-        "h K" '(describe-key :which-key "describe key in depth")
-        "h m" '(describe-mode :which-key "describe modes")
+        "h K" '(helpful-key :which-key "describe key in depth")
+        "h m" '(helpful-mode :which-key "describe modes")
         "h M" '(+default/man-or-woman :which-key "man page")
-        "h v" '(describe-variable :which-key "describe variable")
+        "h v" '(helpful-variable :which-key "describe variable")
         "i" '(:ignore t :which-key "insert snippet")
         "i d" '(crux-insert-date :which-key "insert date")
         "i e" '(yas-visit-snippet-file :which-key "edit snippet")
@@ -309,11 +318,7 @@
   :demand
   :custom
   (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+  (counsel-describe-variable-function #'helpful-variable))
 
 ;; Setup doom-modeline from doom emacs
 (use-package doom-modeline
@@ -654,6 +659,7 @@
 ;; ORG
 ;; =============================================================================
 ;; Setup org
+;; TODO this can be moved into use-package:
 (defun taylor-gl/org-mode-setup ()
   (variable-pitch-mode 1)
   (auto-fill-mode 0))
@@ -697,7 +703,7 @@
   (setq org-ellipsis " ▼"
         org-directory "~/Dropbox/emacs/"
         org-agenda-files '("~/Dropbox/emacs/todo.org" "~/Dropbox/emacs/reference.org")
-        org-modules '(ol-bibtex)
+        org-modules '(ol-bibtex org-habit)
         org-link-shell-confirm-function nil ;; don't annoy me by asking for confirmation
         ;; don't show DONE items in agenda
         org-agenda-skip-scheduled-if-done t
@@ -769,8 +775,8 @@
   (org-bullets-bullet-list '("◇" "◆" "◉" "●" "○" "●" "○" "●" "○" "●" "○" "●")))
 
 (use-package evil-org
-  :after evil
-  :ghook 'org-mode-hook
+  :after (evil org)
+  :ghook ('(org-mode-hook org-agenda-mode-hook))
   :general
   (:states '(visual operator)
 	   :keymap 'evil-inner-text-objects-map
@@ -786,6 +792,112 @@
 	   "E" 'evil-org-an-element
 	   "r" 'evil-org-a-greater-element
 	   "R" 'evil-org-a-subtree)
+  ;; These are modified from 'evil-org-agenda-set-keys in evil-org-agenda, which I couldn't make
+  ;; work on its own. Also modified for colemak.
+  (:states 'emacs
+	   :keymap 'org-agenda-mode-map
+	   ;; open
+	   "<tab>" 'org-agenda-goto
+	   "S-<return>" 'org-agenda-goto
+	   "g TAB" 'org-agenda-goto
+	   "RET" 'org-agenda-switch-to
+
+	   ;; close
+	   "q" 'org-agenda-quit
+
+	   ;; motion
+	   "n" 'org-agenda-next-line
+	   "e" 'org-agenda-previous-line
+	   "gn" 'org-agenda-next-item
+	   "ge" 'org-agenda-previous-item
+	   "gN" 'org-agenda-next-item
+	   "gE" 'org-agenda-previous-item
+	   "gH" 'evil-window-top
+	   "gM" 'evil-window-middle
+	   "gL" 'evil-window-bottom
+	   "C-n" 'org-agenda-next-item
+	   "C-e" 'org-agenda-previous-item
+	   "[[" 'org-agenda-earlier
+	   "]]" 'org-agenda-later
+
+	   ;; manipulation
+	   "N" 'org-agenda-priority-down
+	   "E" 'org-agenda-priority-up
+	   "H" 'org-agenda-do-date-earlier
+	   "I" 'org-agenda-do-date-later
+	   "t" 'org-agenda-todo
+	   "M-n" 'org-agenda-drag-line-forward
+	   "M-e" 'org-agenda-drag-line-backward
+	   "C-S-h" 'org-agenda-todo-previousset ; Original binding "C-S-<left>"
+	   "C-S-i" 'org-agenda-todo-nextset ; Original binding "C-S-<right>"
+
+	   ;; undo
+	   "l" 'org-agenda-undo
+
+	   ;; actions
+	   "dd" 'org-agenda-kill
+	   "dA" 'org-agenda-archive
+	   "da" 'org-agenda-archive-default-with-confirmation
+	   "ct" 'org-agenda-set-tags
+	   "ce" 'org-agenda-set-effort
+	   "cT" 'org-timer-set-timer
+	   "i" 'org-agenda-diary-entry
+	   "a" 'org-agenda-add-note
+	   "A" 'org-agenda-append-agenda
+	   "C" 'org-agenda-capture
+
+	   ;; mark
+	   "m" 'org-agenda-bulk-toggle
+	   "~" 'org-agenda-bulk-toggle-all
+	   "*" 'org-agenda-bulk-mark-all
+	   "%" 'org-agenda-bulk-mark-regexp
+	   "M" 'org-agenda-bulk-unmark-all
+	   "x" 'org-agenda-bulk-action
+
+	   ;; refresh
+	   "gr" 'org-agenda-redo
+	   "gR" 'org-agenda-redo-all
+
+	   ;; quit
+	   "ZQ" 'org-agenda-exit
+	   "ZZ" 'org-agenda-quit
+
+	   ;; display
+	   "gD" 'org-agenda-view-mode-dispatch
+	   "ZD" 'org-agenda-dim-blocked-tasks
+
+	   ;; filter
+	   "sc" 'org-agenda-filter-by-category
+	   "sr" 'org-agenda-filter-by-regexp
+	   "se" 'org-agenda-filter-by-effort
+	   "st" 'org-agenda-filter-by-tag
+	   "s^" 'org-agenda-filter-by-top-headline
+	   "ss" 'org-agenda-limit-interactively
+	   "S" 'org-agenda-filter-remove-all
+
+	   ;; clock
+	   "I" 'org-agenda-clock-in ; Original binding
+	   "O" 'org-agenda-clock-out ; Original binding
+	   "cg" 'org-agenda-clock-goto
+	   "cc" 'org-agenda-clock-cancel
+	   "cr" 'org-agenda-clockreport-mode
+
+	   ;; go and show
+	   "." 'org-agenda-goto-today
+	   "gc" 'org-agenda-goto-calendar
+	   "gC" 'org-agenda-convert-date
+	   "gd" 'org-agenda-goto-date
+	   "gh" 'org-agenda-holidays
+	   "gm" 'org-agenda-phases-of-moon
+	   "gs" 'org-agenda-sunrise-sunset
+	   "gt" 'org-agenda-show-tags
+
+	   "p" 'org-agenda-date-prompt
+	   "P" 'org-agenda-show-the-flagging-note
+
+	   ;; Others
+	   "+" 'org-agenda-manipulate-query-add
+	   "-" 'org-agenda-manipulate-query-subtract)
   :init
   (setq evil-org-retain-visual-state-on-shift t)
   (setq evil-org-special-o/O '(table-row))
@@ -795,16 +907,11 @@
   (setq evil-org-movement-bindings
 	'((up . "e") (down . "n")
 	  (left . "h") (right . "i")))
-    )
+  )
 
-;; TODO Failed to install evil-org-agenda: Package "evil-org-agenda-" is unavailable
-;; (use-package evil-org-agenda
-  ;; :ghook 'org-agenda-mode-hook
-  ;; :config
-  ;; (evil-org-agenda-set-keys)
-  ;; (evil-define-key* 'motion evil-org-agenda-mode-map
-    ;; "SPC" nil))
 
+
+;;TODO fix this put in use-package:
 (with-eval-after-load 'org-faces
   (dolist (face '((org-level-1)
                   (org-level-2)
