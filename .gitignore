@@ -58,6 +58,8 @@ flycheck_*.el
 
 # old doom emacs config
 /doom.d.bak/
+/.scripts/nordvpn-linux-system-tray
+/.scripts/sbp
 
 # Dolphin .directory file
 *.directory*
