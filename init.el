@@ -11,7 +11,6 @@
 ;; TODO get which-key paging keybindings working
 ;; TODO elisp files are colored incorrectly; some faces are not being set
 ;; TODO hl-todo causes a segfault when enabled for some reason
-;; TODO org mode: g e to go up to next heading etc.
 ;; TODO fix evil-surround
 ;; Packages:
 ;; TODO LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
@@ -24,7 +23,6 @@
 ;; TODO magithub
 ;; TODO magit evil keybindings
 ;; TODO writegood mode
-;; TODO org-cliplink
 ;; TODO a spell checker, with settings turned to the minimum
 ;; Languages: (lsp and repl at least)
 ;; TODO Bash
@@ -724,7 +722,6 @@
       "c" #'(org-insert-todo-heading :which-key "item insert checkbox/todo")
       "i" #'(org-toggle-item :which-key "toggle item")
       "t" #'(org-todo :which-key "set TODO state")
-
       "x" #'(:ignore t :which-key "table")
       "x -" #'(org-table-insert-hline :which-key "horizontal line")
       "x a" #'(org-table-align :which-key "align")
@@ -740,8 +737,25 @@
       "x i -" #'(org-table-insert-hline :which-key "horizontal line")
       "x i _" #'(org-table-hline-and-move :which-key "horizontal line and move")
       "x i r" #'(org-table-insert-row :which-key "row")
-
-      "n" #'org-store-link
+      "d" #'(:ignore t :which-key "deadline/schedule")
+      "d d" #'(org-deadline :which-key "set deadline")
+      "d s" #'(org-schedule :which-key "set schedule")
+      "d t" #'(org-time-stamp :which-key "time stamp")
+      "d T" #'(org-time-stamp-inactive :which-key "time stamp inactive")
+      "g" #'(:ignore t :which-key "goto")
+      "g g" #'(counsel-org-goto :which-key "goto heading")
+      "g G" #'(counsel-org-goto-all :which-key "goto heading (all)")
+      "g c" #'(org-clock-goto :which-key "goto clock")
+      "g i" #'(org-id-goto :which-key "goto id")
+      "g r" #'(org-refile-goto-last-stored :which-key "goto last refile")
+      "g x" #'(org-capture-goto-last-stored :which-key "goto last capture")
+      "l" #'(:ignore t :which-key "link")
+      "l c" #'(org-cliplink :which-key "clip")
+      "l i" #'(org-id-store-link :which-key "store using id")
+      "l l" #'(org-insert-link :which-key "insert")
+      "l L" #'(org-insert-all-links :which-key "insert all links")
+      "l s" #'(org-store-link :which-key "store")
+      "l S" #'(org-insert-last-stored-link :which-key "insert last stored link")
       )
   :config
   (variable-pitch-mode 1)
@@ -813,7 +827,7 @@
                                                    (/ calendar-daylight-savings-ends-time
                                                       (float 60))
                                                    calendar-daylight-time-zone-name))))))
-
+(use-package org-cliplink)
 (use-package org-bullets
   :after org
   :ghook 'org-mode-hook
