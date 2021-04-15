@@ -7,12 +7,16 @@
 ;; TODO use #' instead of ' where appropriate
 ;; TODO setup <localleader>
 ;; TODO performance: use (gcc)emacs 27+ compiled against native JSON
+;; TODO org-goggles for yanking etc. is fine, but for deleting etc. feels like lag
 ;; Fix:
 ;; TODO get ligatures working in programming modes
 ;; TODO get which-key paging keybindings working
 ;; TODO elisp files are colored incorrectly; some faces are not being set
 ;; TODO hl-todo causes a segfault when enabled for some reason
 ;; TODO org mode: g e to go up to next heading etc.
+;; TODO fix evil-surround
+;; TODO change C-o to not move my screen if possible?
+;; TODO backspace deletes chars in normal mode
 ;; Packages:
 ;; TODO LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO LSP: setup debugger (dap-mode)
@@ -25,11 +29,10 @@
 ;; TODO magit evil keybindings
 ;; TODO writegood mode
 ;; TODO org-cliplink
-;; TODO hungry-delete or whatever
+;; TODO a spell checker, with settings turned to the minimum
 ;; Languages: (lsp and repl at least)
 ;; TODO Bash
 ;; TODO C and C++
-;; TODO Elixir (and Erlang)
 ;; TODO GDscript
 ;; TODO Grammarly has lsp-mode support lol
 ;; TODO HTML/CSS/Javascript/JSON
@@ -38,8 +41,8 @@
 ;; TODO Markdown
 ;; TODO Python: use Black for formatting
 ;; TODO Rust
-;; TODO SQL
-;; TODO Latex; Latex org integration
+;; INPROGRESS SQL
+;; INPROGRESS Latex; Latex org integration
 ;; TODO XML/YAML/TOML
 ;; Ideas:
 ;; TODO https://tecosaur.github.io/emacs-config/config.html
@@ -61,6 +64,7 @@
 (tooltip-mode -1)
 (menu-bar-mode -1)
 (set-fringe-mode 10)
+(global-visual-line-mode t)
 
 ;; Fonts
 ;; The following must use default-frame-alist rather than set-face-attribute, otherwise
@@ -95,6 +99,9 @@
 (setq backup-directory-alist
       `(("." . ,"~/.emacs.d/backups")))
 
+;; Don't ask me for confirmation when closing buffers with running processes etc.
+(setq kill-buffer-query-functions nil)
+
 ;; Scratch buffer
 (setq initial-major-mode 'fundamental-mode)
 (setq initial-scratch-message nil)
@@ -120,19 +127,34 @@
 (setq use-package-always-ensure t)
 
 ;; Setup general -- better keybindings and leader key
+;; Use like this in use-package blocks to define mode-specific keybindings under <localleader> (SPC m):
+;; :init
+;; (taylor-gl/localleader-def-create! org-mode-map
+    ;; "SPC" 'save-buffer)
+(defmacro taylor-gl/localleader-def-create! (keymap &rest body)
+  "Create a definer named taylor-gl/localleader-def-KEYMAP in the global SPC m <localleader> menu."
+  (declare (indent 2))
+  `(progn
+     (general-create-definer ,(intern (concat "taylor-gl/localleader-def-" (symbol-name keymap)))
+       :states '(normal insert visual emacs)
+       :keymaps ',keymap
+       :prefix "SPC m"
+       :global-prefix "C-SPC m")
+     (,(intern (concat "taylor-gl/localleader-def-" (symbol-name keymap)))
+      ,@body)))
+
 (use-package general
     :demand
     :config
     (general-evil-setup t)
-    (general-create-definer taylor-gl/leader-key-def
+    (general-create-definer taylor-gl/leader-def
         :states '(normal insert visual emacs)
         :keymaps 'override
         :prefix "SPC"
         :global-prefix "C-SPC"
-        "" '(:ignore t :which-key "<leader>")
-        )
+        "" '(:ignore t :which-key "<leader>"))
     ;; many of these come from doom emacs
-    (taylor-gl/leader-key-def
+    (taylor-gl/leader-def
         "SPC" 'save-buffer
         "RET" 'counsel-bookmark
         "TAB" '(lambda (&optional arg) (interactive "P")(org-agenda arg "n")) ;; open agenda and all TODOs directly
@@ -141,7 +163,7 @@
         ";" 'pp-eval-expression
         "b" '(:ignore t :which-key "buffer")
         "b b" '(counsel-switch-buffer :which-key "switch buffers")
-        "b d" '(kill-current-buffer :which-bey "kill this buffer")
+        "b d" '(kill-current-buffer :which-key "kill this buffer")
         "b D" '(kill-buffer :which-key "kill a buffer")
         "b k" '(crux-kill-other-buffers :which-key "kill all other buffers")
         "b n" '(next-buffer :which-key "next buffer")
@@ -177,12 +199,13 @@
         "h m" '(helpful-mode :which-key "describe modes")
         "h M" '(+default/man-or-woman :which-key "man page")
         "h v" '(helpful-variable :which-key "describe variable")
-        "i" '(:ignore t :which-key "insert snippet")
+        "i" '(:ignore t :which-key "insert")
         "i d" '(crux-insert-date :which-key "insert date")
         "i e" '(yas-visit-snippet-file :which-key "edit snippet")
         "i n" '(yas-new-snippet :which-key "new snippet")
         "i s" '(yas-insert-snippet :which-key "insert snippet")
         "i x" '(crux-delete-buffer-and-file :which-key "delete current buffer file")
+	"m" '(:ignore t :which-key "<localleader>")
 	"u" '(:ignore t :which-key "undo")
 	"u l" '(undo-tree-undo :which-key "undo (last)")
 	"u r" '(undo-tree-redo :which-key "redo")
@@ -432,6 +455,7 @@
   (setq shackle-rules '((("^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)" "^\\*info\\*$" "\\`\\*magit-diff: .*?\\'" grep-mode "*ag search*" "*Flycheck errors*") :regexp t :align below :noselect t :size 0.3)
 			("^\\*\\(?:Wo\\)?Man " :regexp t :align right :select t)
 			("^\\*Calc" :regexp t :align below :select t :size 0.3)
+			("^\\*Alchemist" :regexp t :align below :select t :size 0.3 :same nil)
 			("^\\*lsp-help" :regexp t :select t :align bottom :size 0.2)
 			(("^\\*Warnings" "^\\*Warnings" "^\\*CPU-Profiler-Report " "^\\*Memory-Profiler-Report " "^\\*Process List\\*" "*Error*") :regexp t :align below :noselect t :size 0.2)
 			("^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail\\)\\*" :regexp t :ignore t)
@@ -459,7 +483,6 @@
                                        ("because" . ?∵)
                                        ("&&" . ?∧)
                                        ("||" . ?∨)
-                                       ("==" . ?≡)
                                        ("<=" . ?≤)
                                        (">=" . ?≥)
                                        ("<<" . ?≪)
@@ -625,7 +648,7 @@
 (use-package evil-numbers
   :after evil
   :general
-  (:keymaps evil-normal-state-map
+  (:keymaps 'evil-normal-state-map
          "g =" 'evil-numbers/inc-at-pt
          "g -" 'evil-numbers/dec-at-pt)
   )
@@ -699,6 +722,35 @@
 	    ;; "g e" 'org-backward-element
 	    ;; "g i" 'org-down-element
 	    )
+  :init
+  (taylor-gl/localleader-def-create! org-mode-map
+      "'" 'org-edit-special
+      "*" 'org-ctrl-c-star
+      "-" 'org-ctrl-c-minus
+      "-" 'org-ctrl-c-minus
+      "." '(org-goto :which-key "goto")
+      "c" '(org-insert-todo-heading :which-key "item insert checkbox/todo")
+      "i" '(org-toggle-item :which-key "toggle item")
+      "t" '(org-todo :which-key "set TODO state")
+
+      "x" '(:ignore t :which-key "table")
+      "x -" '(org-table-insert-hline :which-key "horizontal line")
+      "x a" '(org-table-align :which-key "align")
+      "x c" '(org-table-create-or-convert-from-region :which-key "create")
+      "x h" '(org-table-field-info :which-key "field info")
+      "x s" '(org-table-sort-lines :which-key "sort")
+      "x r" '(org-table-recalculate :which-key "recalculate")
+      "x d" '(:ignore t :which-key "delete")
+      "x d c" '(org-table-delete-column :which-key "column")
+      "x d r" '(org-table-kill-row :which-key "row")
+      "x i" '(:ignore t :which-key "insert")
+      "x i c" '(org-table-insert-column :which-key "column")
+      "x i -" '(org-table-insert-hline :which-key "horizontal line")
+      "x i _" '(org-table-hline-and-move :which-key "horizontal line and move")
+      "x i r" '(org-table-insert-row :which-key "row")
+
+      "n" 'org-store-link
+      )
   :config
   (setq org-ellipsis " ▼"
         org-directory "~/Dropbox/emacs/"
@@ -962,8 +1014,43 @@
 ;; =============================================================================
 ;; various coding-related modes
 (defconst code-mode-hooks
-  '(prog-mode-hook python-mode-hook elisp-mode-hook emacs-lisp-mode-hook)
+  '(prog-mode-hook python-mode-hook elisp-mode-hook elixir-mode-hook emacs-lisp-mode-hook)
   )
+
+(defun taylor-gl/setup-indent (n)
+  ;; general
+  (setq tab-width n)
+  ;; java/c/c++
+  (setq c-basic-offset n)
+  ;; web development
+  (setq coffee-tab-width n) ; coffeescript
+  (setq javascript-indent-level n) ; javascript-mode
+  (setq js-indent-level n) ; js-mode
+  (setq js2-basic-offset n) ; js2-mode, in latest js2-mode, it's alias of js-indent-level
+  (setq web-mode-markup-indent-offset n) ; web-mode, html tag in html file
+  (setq web-mode-css-indent-offset n) ; web-mode, css in html file
+  (setq web-mode-code-indent-offset n) ; web-mode, js code in html file
+  (setq css-indent-offset n) ; css-mode
+  )
+
+(defun taylor-gl/setup-code-mode ()
+    (setq indent-tabs-mode nil)
+    (taylor-gl/setup-indent 2))
+
+(mapc
+ (lambda (code-mode-hook)
+   (general-add-hook code-mode-hook 'taylor-gl/setup-code-mode))
+ code-mode-hooks)
+
+;; Setup smart-hungry-delete
+;; Deletes multiple whitespace characters at once
+(use-package smart-hungry-delete
+	:demand t
+	:general
+	("<backspace>" 'smart-hungry-delete-backward-char
+	 "C-d" 'smart-hungry-delete-forward-char)
+	:config
+	(smart-hungry-delete-add-default-hooks))
 
 ;; Setup company-mode (autocompletion; integrates with lsp-mode)
 (use-package company
@@ -1000,6 +1087,7 @@
   (flycheck-pos-tip-mode))
 
 ;; Setup LSP-server
+;; TODO lsp-workspace-folders-add and remove -- bind to <localleader>
 (defconst lsp-mode-hooks
   '(python-mode-hook))
 (use-package lsp-mode
@@ -1007,6 +1095,10 @@
   :demand
   :ghook (lsp-mode-hooks 'lsp)
   ('lsp-mode-hook 'lsp-enable-which-key-integration)
+  ('elixir-mode-hook 'lsp)
+  ('sql-mode-hook 'lsp)
+  ('tex-mode-hook 'lsp)
+  ('LaTeX-mode-hook 'lsp)
   ;; :general
   ;; (:keymap 'lsp-mode-map
 	   ;; :states '(normal visual emacs)
@@ -1022,6 +1114,11 @@
   (setq lsp-keymap-prefix "C-c l") ;; having this set creates which-key integration
   (setq lsp-enable-folding nil)
   (setq lsp-enable-on-type-formatting nil)
+  (add-to-list 'exec-path "~/.emacs.d/lsp-servers/elixir-ls-1.11/")
+  (add-to-list 'exec-path "~/.emacs.d/lsp-servers/.digestif/")
+  (setq lsp-sqls-server "~/.emacs.d/lsp-servers/sqls")
+  (setq lsp-sqls-connections
+	'(((driver . "postgresql") (dataSourceName . "host=dbsrv1.teach.cs.toronto.edu port=22 user=lunttayl password=2dfdc1c3e dbname=csc343h-lunttayl sslmode=disable"))))
   ;; (require 'dash-functional)
   :custom
   (lsp-prefer-flymake nil)
@@ -1036,7 +1133,7 @@
   :custom
   (lsp-ui-doc-enable nil)
   (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-diagnostic-max-lines 3)
+  (lsp-ui-sideline-diagnostic-max-lines 8)
   (lsp-ui-sideline-show-diagnostics t)
   (lsp-ui-sideline-ignore-duplicate t)
   (lsp-ui-sideline-enable t)
@@ -1053,6 +1150,136 @@
 (use-package lsp-pyright
   :demand
   :ghook ('python-mode-hook 'lsp))
+
+;; Setup web-mode for HTML, CSS, Javascript, elixir .eex files, etc.
+(use-package web-mode
+  :mode "\\.[px]?html?\\'"
+  :mode "\\.\\(?:tpl\\|blade\\)\\(?:\\.php\\)?\\'"
+  :mode "\\.erb\\'"
+  :mode "\\.l?eex\\'"
+  :mode "\\.jsp\\'"
+  :mode "\\.as[cp]x\\'"
+  :mode "\\.hbs\\'"
+  :mode "\\.mustache\\'"
+  :mode "\\.svelte\\'"
+  :mode "\\.twig\\'"
+  :mode "\\.jinja2?\\'"
+  :mode "\\.eco\\'"
+  :mode "wp-content/themes/.+/.+\\.php\\'"
+  :mode "templates/.+\\.php\\'"
+  :init
+  (setq web-mode-enable-html-entities-fontification t)
+  (setq web-mode-auto-close-style 1)
+  :config
+  (add-to-list 'web-mode-engines-alist '("elixir" . "\\.eex\\'"))
+  )
+
+;; Setup elixir/phoenix
+(use-package elixir-mode
+  ;; :init
+  ;; TODO (provide 'smartparens-elixir) from doom config
+  )
+(use-package alchemist
+  :ghook ('elixir-mode-hook 'alchemist-mode)
+  :init
+  (taylor-gl/localleader-def-create! alchemist-mode-map
+      "=" '(elixir-format :which-key "format buffer")
+      "i" '(:ignore t :which-key "iex")
+      "i c" '(alchemist-compile-this-buffer :which-key "compile buffer")
+      "i i" '(alchemist-iex-compile-this-buffer-and-go :which-key "compile buffer and open iex")
+      "i p" '(alchemist-iex-project-run :which-key "compile project and open iex")
+      "i r" '(alchemist-iex-run :which-key "run iex")
+      "i s" '(alchemist-iex-send-current-line-and-go :which-key "send line to iex")
+      "i R" '(alchemist-iex-send-region-and-go :which-key "send region to iex")
+      "f" '(:ignore t :which-key "find")
+      "f c" '(alchemist-phoenix-find-controllers :which-key "controller (phoenix)")
+      "f C" '(alchemist-phoenix-find-channels :which-key "channel (phoenix)")
+      "f l" '(alchemist-project-find-lib :which-key "in lib dir")
+      "f m" '(alchemist-phoenix-find-models :which-key "model (phoenix)")
+      "f r" '(alchemist-phoenix-router :which-key "router file (phoenix)")
+      "f s" '(alchemist-phoenix-find-static :which-key "in static dir (phoenix)")
+      "f t" '(alchemist-project-find-test :which-key "test")
+      "f T" '(alchemist-phoenix-find-templates :which-key "template (phoenix)")
+      "f v" '(alchemist-phoenix-find-views :which-key "view (phoenix)")
+      "f w" '(alchemist-phoenix-find-web :which-key "web (phoenix)")
+      "h" '(:ignore t :which-key "help")
+      "h b" '(alchemist-goto-jump-back :which-key "goto jump back")
+      "h d" '(alchemist-goto-definition-at-point :which-key "goto definition at point")
+      "h s" '(alchemist-goto-list-symbol-definitions :which-key "goto symbol")
+      "m" '(:ignore t :which-key "mix")
+      "m c" '(alchemist-mix-compile :which-key "compile project")
+      "m l" '(alchemist-mix-rerun-last-task :which-key "rerun last task")
+      "m m" '(alchemist-mix :which-key "mix prompt")
+      "m r" '(alchemist-mix-run :which-key "run file/expression")
+      "m R" '(alchemist-phoenix-routes :which-key "mix phoenix.routes")
+      "t" '(:ignore t :which-key "test (mix)")
+      "t b" '(alchemist-mix-test-this-buffer :which-key "test buffer")
+      "t p" '(alchemist-mix-test-at-point :which-key "test at point")
+      "t r" '(alchemist-mix-rerun-last-test :which-key "rerun last test")
+      "t v" '(alchemist-mix-test :which-key "run tests")
+      "t p" '(alchemist-project-run-tests-for-current-file :which-key "run tests for this file")
+      "t t" '(alchemist-project-toggle-file-and-tests :which-key "toggle file and test")
+      "t T" '(alchemist-project-toggle-file-and-tests-other-window :which-key "toggle file and test (other window)")
+      "x" '(:ignore t :which-key "macroexpand")
+      "x l" '(alchemist-macroexpand-once-current-line :which-key "current line once")
+      "x L" '(alchemist-macroexpand-current-line :which-key "current line")
+      "x r" '(alchemist-macroexpand-once-region :which-key "region once")
+      "x R" '(alchemist-macroexpand-region :which-key "region")
+      ))
+
+(use-package exunit
+  :ghook 'elixir-mode
+  :init
+  (taylor-gl/localleader-def-create! elixir-mode-map
+      "T" '(:ignore t :which-key "test (exunit)")
+      "T a" '(exunit-verify-all :which-key "all files")
+      "T r" '(exunit-rerun :which-key "rerun last command")
+      "T v" '(exunit-verify :which-key "this file")
+      "T s" '(exunit-verify-single :which-key "single item on cursor")
+      "T t" '(exunit-toggle-file-and-test :which-key "toggle file and test")
+      "T T" '(exunit-toggle-file-and-test-other-window "toggle file and test (other window)")
+      ))
+
+;; Setup SQL
+;; TODO this was done in a hurry
+(use-package sql
+  :mode (("\\.sql" . sql-mode)
+	 ("\\.ddl" . sql-mode)))
+
+;; Setup LaTeX
+;; TODO this was done in a hurry
+;; (use-package tex
+;;   :ensure nil
+;;   :mode ("\\.tex\\'" . LaTeX-mode)
+;;   :init
+;;   (setq TeX-parse-self t)
+;;   (setq TeX-auto-save t)
+;;   )
+;; (use-package latex
+;;   :ensure nil
+;;   :config
+;;   (setq ispell-parser 'tex))
+
+;; (use-package auctex
+;;   :after latex)
+;; (use-package auctex-latexmk
+;;   :after auctex
+;;   :init
+;;   (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+;;   :config
+;;   (setq TeX-command-default "LatexMk")
+;;   (auctex-latexmk-setup))
+;; (use-package evil-tex
+;;   :ghook 'LaTeX-mode-hook)
+;; (use-package company-auctex
+;;   ;; :ghook ???
+;;   :config
+;;   (company-auctex-init))
+;; ;; (use-package company-reftex) ;; TODO
+;; (use-package company-math
+;;   :after latex
+;;   :config
+;;   (add-to-list 'company-backends 'company-math-symbols-unicode))
 
 ;; =============================================================================
 ;; MISC.
