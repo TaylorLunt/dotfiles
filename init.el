@@ -13,8 +13,6 @@
 ;; TODO hl-todo causes a segfault when enabled for some reason
 ;; TODO org mode: g e to go up to next heading etc.
 ;; TODO fix evil-surround
-;; TODO change C-o to not move my screen if possible?
-;; TODO backspace deletes chars in normal mode -- due to hungry delete binding
 ;; Packages:
 ;; TODO LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO LSP: setup debugger (dap-mode)
@@ -1042,10 +1040,11 @@
 ;; Deletes multiple whitespace characters at once
 (use-package smart-hungry-delete
 	:demand t
-	:general
-	("<backspace>" #'smart-hungry-delete-backward-char
-	 "C-d" #'smart-hungry-delete-forward-char)
-	:config
+  :general
+  (:states 'insert
+   "<backspace>" #'smart-hungry-delete-backward-char
+   "C-d" #'smart-hungry-delete-forward-char)
+  :config
 	(smart-hungry-delete-add-default-hooks))
 
 ;; Setup company-mode (autocompletion; integrates with lsp-mode)
