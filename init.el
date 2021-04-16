@@ -9,7 +9,6 @@
 ;; Fix:
 ;; TODO get ligatures working in programming modes
 ;; TODO get which-key paging keybindings working
-;; TODO elisp files are colored incorrectly; some faces are not being set
 ;; TODO hl-todo causes a segfault when enabled for some reason
 ;; TODO fix evil-surround
 ;; Packages:
@@ -24,6 +23,9 @@
 ;; TODO magit evil keybindings
 ;; TODO writegood mode
 ;; TODO a spell checker, with settings turned to the minimum
+;; TODO org-noter?
+;; TODO outline mode
+;; TODO selectrum and icomplete?
 ;; Languages: (lsp and repl at least)
 ;; TODO Bash
 ;; TODO C and C++
@@ -1253,6 +1255,11 @@
 (use-package sql
   :mode (("\\.sql" . sql-mode)
 	 ("\\.ddl" . sql-mode)))
+
+;; Setup emacs-lisp
+(use-package highlight-quoted
+  :demand
+  :ghook 'emacs-lisp-mode-hook)
 
 ;; Setup LaTeX
 ;; TODO this was done in a hurry
