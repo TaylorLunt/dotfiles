@@ -220,7 +220,7 @@
         "r i" #'(org-roam-insert :which-key "insert note citation")
         "r l" #'(org-ref-insert-link :which-key "insert link to reference")
         "r p" #'(org-mark-ring-goto :which-key "previous note")
-        "r r" #'(org-roam :which-key "start roam")
+        "r r" #'(org-roam-buffer-toggle-display :which-key "start roam")
         "r t" #'(org-roam-tag-add :which-key "add tag")
         "r T" #'(org-roam-tag-delete :which-key "delete tag")
         "r u" #'(org-roam-update :which-key "update roam now")
@@ -693,27 +693,28 @@
          "C-S-i" (lambda () (interactive) (org-eval-in-calendar '(calendar-forward-month 1)))
          )
   (:keymaps 'org-mode-map
-	    "RET" #'+org/dwim-at-point
-	    "<return>" #'+org/dwim-at-point
-	    "M-h" #'org-metaleft
-	    "M-n" #'org-metadown
-	    "M-e" #'org-metaup
-	    "M-i" #'org-metaright
-	    "M-H" #'org-shiftmetaleft
-	    "M-N" #'org-shiftmetadown
-	    "M-E" #'org-shiftmetaup
-	    "M-I" #'org-shiftmetaright
-	    "M-f" #'org-forward-sentence
-	    "C-H" #'org-shiftcontrolleft
-	    "C-N" #'org-shiftcontroldown
-	    "C-E" #'org-shiftcontrolup
-	    "C-E" #'org-shiftcontrolright
-	    ;; TODO put these in 'normal and 'visual mode maps
-	    ;; "g h" 'org-up-element
-	    ;; "g n" 'org-forward-element
-	    ;; "g e" 'org-backward-element
-	    ;; "g i" 'org-down-element
-	    )
+   :states '(normal)
+   "RET" #'+org/dwim-at-point
+   "<return>" #'+org/dwim-at-point
+   "M-h" #'org-metaleft
+   "M-n" #'org-metadown
+   "M-e" #'org-metaup
+   "M-i" #'org-metaright
+   "M-H" #'org-shiftmetaleft
+   "M-N" #'org-shiftmetadown
+   "M-E" #'org-shiftmetaup
+   "M-I" #'org-shiftmetaright
+   "M-f" #'org-forward-sentence
+   "C-H" #'org-shiftcontrolleft
+   "C-N" #'org-shiftcontroldown
+   "C-E" #'org-shiftcontrolup
+   "C-E" #'org-shiftcontrolright
+   ;; TODO put these in 'normal and 'visual mode maps
+   ;; "g h" 'org-up-element
+   ;; "g n" 'org-forward-element
+   ;; "g e" 'org-backward-element
+   ;; "g i" 'org-down-element
+   )
   :init
   (taylor-gl/localleader-def-create! org-mode-map
       "'" #'org-edit-special
