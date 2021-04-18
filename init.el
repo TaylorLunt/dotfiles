@@ -153,7 +153,7 @@
     (taylor-gl/leader-def
         "SPC" #'save-buffer
         "RET" #'counsel-bookmark
-        "TAB" #'(lambda (&optional arg) (interactive "P")(org-agenda arg "n")) ;; open agenda and all TODOs directly
+        "TAB" #'(lambda (&optional arg) (interactive "P")(org-agenda-list arg)) ;; open agenda for next month
         "/" #'comment-line
         ":" #'counsel-M-x
         ";" #'pp-eval-expression
@@ -765,6 +765,7 @@
   (setq org-ellipsis " ▼"
         org-directory "~/Dropbox/emacs/"
         org-agenda-files '("~/Dropbox/emacs/todo.org" "~/Dropbox/emacs/reference.org")
+        org-agenda-span 'month ;; show one month of agenda at a time
         org-modules '(ol-bibtex org-habit)
         org-link-shell-confirm-function nil ;; don't annoy me by asking for confirmation
         ;; don't show DONE items in agenda
