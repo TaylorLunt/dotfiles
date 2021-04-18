@@ -1,0 +1,36 @@
+# colemak vimium bindings matching my emacs config
+
+unmap j
+unmap n
+map n scrollDown
+
+unmap k
+map e scrollUp
+
+unmap l
+unmap i
+map i scrollRight
+
+unmap zL
+map zI scrollToRight
+
+map u insert
+
+map k performFind
+
+unmap N
+unmap K
+map K performBackwardsFind
+
+unmap H
+map l goBack
+
+unmap L
+map L goForward
+
+map R reload hard
+
+unmap J
+map E previousTab
+
+map N nextTab
