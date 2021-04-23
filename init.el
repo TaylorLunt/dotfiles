@@ -470,8 +470,12 @@
 (setq-default prettify-symbols-alist '(
                                        ("#+BEGIN_SRC" . "†")
                                        ("#+END_SRC" . "†")
+                                       ("#+BEGIN_QUOTE" . "†")
+                                       ("#+END_QUOTE" . "†")
                                        ("#+begin_src" . "†")
                                        ("#+end_src" . "†")
+                                       ("#+begin_quote" . "†")
+                                       ("#+end_quote" . "†")
                                        ("lambda" . ?λ)
                                        ("\forall" . ?∀)
                                        ("\exists" . ?∃)
