@@ -1,4 +1,6 @@
 # colemak vimium bindings matching my emacs config
+# I also changed the link hint characters to be colemak-friendly:
+# rastneiodhzxcv
 
 unmap j
 unmap n
@@ -16,21 +18,30 @@ map zI scrollToRight
 
 map u insert
 
-map k performFind
-
 unmap N
 unmap K
-map K performBackwardsFind
 
 unmap H
-map l goBack
 
 unmap L
-map L goForward
-
-map R reload hard
 
 unmap J
-map E previousTab
 
-map N nextTab
+map s LinkHints.activateMode action=focus
+map S LinkHints.activateModeToOpenInNewTab action=hover
+
+# using Vivaldi keybindings for these features
+unmap o
+unmap O
+unmap b
+unmap B
+unmap r
+unmap /
+unmap x
+# map R reload hard
+# map k performFind
+# map K performBackwardsFind
+# map L goForward
+# map l goBack
+#map E previousTab
+#map N nextTab
