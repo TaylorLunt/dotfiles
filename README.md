@@ -44,6 +44,8 @@ I used to use I3 with I3blocks, but now I'm using awesome. Blocks come from vari
 -----
 
 ## vivaldi css
-| File | Description |
-|------|-------------|
-| vivaldi_css | css for the vivaldi web browser, which vivaldi has a [setting to load from](https://forum.vivaldi.net/topic/37802/css-modifications-experimental-feature)
+| File        | Description                                                                                                                                               |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| vivaldi_css | css for the vivaldi web browser, which vivaldi has a [setting to load from](https://forum.vivaldi.net/topic/37802/css-modifications-experimental-feature) |
+| vimium.txt  | Colemak settings for the vimium browser extension. It gives vim-like keybindings for navigation in the browser.                                                                                                                                                          |
+
