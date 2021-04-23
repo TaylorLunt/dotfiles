@@ -334,28 +334,20 @@ globalkeys = my_table.join(
               {description = "focus the previous screen", group = "screen"}),
     -- awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               -- {description = "jump to urgent client", group = "client"}),
-    awful.key({ modkey,           }, "Tab",
+
+    -- Focus last window
+    -- Works across tags/screens unlike the default modkey+tab awesome binding
+    awful.key({ modkey, }, "r",
         function ()
-            if cycle_prev then
-                awful.client.focus.history.previous()
-            else
-                awful.client.focus.byidx(-1)
+            local c = awful.client.focus.history.list[2]
+            client.focus = c
+            local t = client.focus and client.focus.first_tag or nil
+            if t then
+                t:view_only()
             end
-            if client.focus then
-                client.focus:raise()
-            end
+            c:raise()
         end,
-        {description = "cycle with previous/go back", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "Tab",
-        function ()
-            if cycle_prev then
-                awful.client.focus.byidx(1)
-                if client.focus then
-                    client.focus:raise()
-                end
-            end
-        end,
-        {description = "go forth", group = "client"}),
+        {description = "focus previous", group = "client"}),
 
     -- Show/Hide Wibox
     -- awful.key({ modkey }, "b", function ()
