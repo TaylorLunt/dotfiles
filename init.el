@@ -17,7 +17,6 @@
 ;; TODO emacs-tree-sitter: better, faster syntax highlighting and structure editing(!)
 ;; TODO smartparens? paredit? emacs-tree-sitter?
 ;; TODO projectile: projectile and lsp projectile integration
-;; TODO typo.el: in markdown mode only, and toggle with SPC t something
 ;; TODO yascroll
 ;; TODO magithub
 ;; TODO magit evil keybindings
@@ -41,10 +40,12 @@
 ;; INPROGRESS Latex; Latex org integration
 ;; TODO XML/YAML/TOML
 ;; Ideas:
+;; TODO something like https://tonsky.me/blog/sublime-writer/, maybe using wordsmith mode
 ;; TODO https://tecosaur.github.io/emacs-config/config.html
 ;; TODO https://github.com/wasamasa/dotemacs/blob/master/init.org
 ;; TODO https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
 ;; TODO https://mstempl.netlify.app/post/beautify-org-mode/
+;; TODO https://github.com/emacs-tw/awesome-emacs#key-bindings
 
 (setq user-full-name "Taylor Lunt"
       user-mail-address "taylorlunt@gmail.com")
@@ -89,11 +90,16 @@
 ;; Scrolling
 (setq mouse-wheel-scroll-amount '(2 ((control) . 5))) ;; two lines at a time unless control held
 
+;; Do not force files to end with a newline
+(setq require-final-newline nil)
+
 ;; Auto-saving
 (auto-save-visited-mode 1)
 (setq auto-save-visited-interval 5)  ;; save after 5 seconds of idle time
 (setq backup-directory-alist
       `(("." . ,"~/.emacs.d/backups")))
+(setq auto-save-file-name-transforms
+          `((".*" ,(concat user-emacs-directory "auto-save/") t)))
 
 ;; Don't ask me for confirmation when closing buffers with running processes etc.
 (setq kill-buffer-query-functions nil)
@@ -418,11 +424,18 @@
 
 ;; Setup saveplace (saves place in file)
 (use-package saveplace
-  :ensure nil
+  :ensure nil ;; already installed
   :demand
   :init
   (save-place-mode t)
   (setq save-place-file "~/.emacs.d/.saveplace"))
+
+;; Setup typo.el for inserting typographic symbols
+(use-package typo
+  :ghook 'markdown-mode-hook
+  :demand
+  :config
+  (typo-global-mode 1))
 
 ;; Setup hl-todo
 ;; TODO this package causes a segfault for some reason
