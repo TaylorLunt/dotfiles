@@ -69,17 +69,16 @@
 (add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono-12"))
 (set-face-attribute 'variable-pitch nil :font "Noto Sans" :height 126 :weight 'regular)
 
-
 ;; Performance (or the illusion thereof)
 ;; emacs >= 27 required:
 ;; (setq bidi-inhibit-bpa t)
 (setq bidi-paragraph-direction 'left-to-right)
 (setq-default bidi-paragraph-direction 'left-to-right)
 (setq echo-keystrokes 0.01)
-;; lower than default undo limit so it doesn't crash my emacs
-(setq undo-limit 40000
-      undo-outer-limit 8000000
-      undo-strong-limit 100000)
+;; lower than default undo limit so it doesn't crash my emacs or cause problems with undo-tree
+(setq undo-limit 10000
+      undo-outer-limit 4000000
+      undo-strong-limit 15000)
 (setq gc-cons-threshold 100000000) ;; recommended for lsp-mode
 ;; emacs >= 27 required:
 ;; (setq read-process-output-max (* 1024 1024)) ;; 1mb read: recommended for lsp-mode
@@ -307,6 +306,7 @@
   (global-undo-tree-mode)
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   (setq undo-tree-auto-save-history t)
+  ;; TODO large undo tree files lead to C stack overflows when opening certain files for first time after emacs startup
   )
 
 ;; =============================================================================
