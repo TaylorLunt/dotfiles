@@ -58,12 +58,19 @@ export PATH=$PATH:/home/taylor/.gem/ruby/2.5.0/bin
 export PATH=$PATH:/home/taylor/.cargo/bin
 export PATH=$PATH:/home/taylor/.cargo/env
 
+# add asdf version manager to path
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
+
 # set the path for locate to the home directory
 export LOCATE_PATH=/home/taylor/.locate.db
 
 # Add go to path
 export GOROOT=/usr/local/go
 export PATH=$PATH:$GOROOT/bin
+
+# Add erlang libs to ERL_LIBS
+export ERL_LIBS="/home/taylor/.asdf/installs/elixir/1.11.2/lib/elixir/lib"
 
 # add pyenv to path
 export PATH="/home/taylor/.pyenv/bin:$PATH"
