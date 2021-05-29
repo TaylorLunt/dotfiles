@@ -640,7 +640,7 @@
   :after evil
   :demand t
   :general
-  (:states '(motion normal visual)
+  (:states '(motion normal visual operator)
 	  "j" #'evil-snipe-j
 	  "J" #'evil-snipe-J
 	  ;; "s" 'evil-snipe-s -- is set by evil-snipe-mode below
