@@ -117,7 +117,7 @@
     ("elpa" . "https://elpa.gnu.org/packages/")))
 ;; fix a bug relating to downloading packages: (probably not required after emacs 26.3)
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-(package-initialize)                    ;
+(package-initialize)
 (unless package-archive-contents
     (package-refresh-contents))
 
@@ -207,11 +207,11 @@
         "i n" #'(yas-new-snippet :which-key "new snippet")
         "i s" #'(yas-insert-snippet :which-key "insert snippet")
         "i x" #'(crux-delete-buffer-and-file :which-key "delete current buffer file")
-	"m" #'(:ignore t :which-key "<localleader>")
-	"u" #'(:ignore t :which-key "undo")
-	"u l" #'(undo-tree-undo :which-key "undo (last)")
-	"u r" #'(undo-tree-redo :which-key "redo")
-	"u v" #'(undo-tree-visualize :which-key "view tree")
+        "m" #'(:ignore t :which-key "<localleader>")
+        "u" #'(:ignore t :which-key "undo")
+        "u l" #'(undo-tree-undo :which-key "undo (last)")
+        "u r" #'(undo-tree-redo :which-key "redo")
+        "u u" #'(undo-tree-visualize :which-key "view tree")
         "q" #'(:ignore t :which-key "quit")
         "q e" #'(save-buffers-kill-emacs :which-key "quit emacs")
         "q E" #'(evil-quit-all-with-error-code :which-key "quit emacs without saving")
@@ -1232,8 +1232,6 @@ If on a:
 	  (left . "h") (right . "i")))
   )
 
-
-
 ;;TODO fix this put in use-package:
 (with-eval-after-load 'org-faces
   (dolist (face '((org-level-1)
@@ -1525,7 +1523,7 @@ If on a:
 ;; Setup bash
 ;; TODO
 (use-package sh-script
-  :ensure nil ;; already installed)
+  :ensure nil) ;; already installed
 
 ;; Setup LaTeX
 ;; TODO this was done in a hurry
