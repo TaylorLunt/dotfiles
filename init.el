@@ -433,6 +433,46 @@
   :config
   (typo-global-mode 1))
 
+;; ligatures
+(setq taylor-gl/custom-prettify-symbols-alist '(
+                                   ("#+BEGIN_SRC" . "†")
+                                   ("#+END_SRC" . "†")
+                                   ("#+BEGIN_QUOTE" . "†")
+                                   ("#+END_QUOTE" . "†")
+                                   ("#+begin_src" . "†")
+                                   ("#+end_src" . "†")
+                                   ("#+begin_quote" . "†")
+                                   ("#+end_quote" . "†")
+                                   ("lambda" . ?λ)
+                                   ("infinity" . ?∞)
+                                   ("therefore" . ?∴)
+                                   ("because" . ?∵)
+                                   ("&&" . ?∧)
+                                   ("||" . ?∨)
+                                   ("<=" . ?≤)
+                                   (">=" . ?≥)
+                                   ("<<" . ?≪)
+                                   (">>" . ?≫)
+                                   ("/=" . ?≠)
+                                   ("!=" . ?≠)
+                                   ("~>" . ?⇝)
+                                   ("<~" . ?⇜)
+                                   ("~~>" . ?⟿)
+                                   ("<=<" . ?↢)
+                                   (">=>" . ?↣)
+                                   ("->" . ?→)
+                                   ("-->" . ?⟶)
+                                   ("<-" . ?←)
+                                   ("<--" . ?⟵)
+                                   ("<=>" . ?⇔)
+                                   ("<==>" . ?⟺)
+                                   ("=>" . ?⇒)
+                                   ("==>" . ?⟹)
+                                   ("<=" . ?⇐)
+                                   ("<==" . ?⟸)
+                                   (" *** " . (?  (Br . Bl) ?⁂ (Br . Bl) ? ))
+                                   ))
+
 ;; Setup hl-todo
 ;; TODO this package causes a segfault for some reason
 ;;(use-package hl-todo
@@ -474,51 +514,6 @@
   :config
   (shackle-mode)
   )
-
-;; Ligatures
-(setq-default prettify-symbols-alist '(
-                                       ("#+BEGIN_SRC" . "†")
-                                       ("#+END_SRC" . "†")
-                                       ("#+BEGIN_QUOTE" . "†")
-                                       ("#+END_QUOTE" . "†")
-                                       ("#+begin_src" . "†")
-                                       ("#+end_src" . "†")
-                                       ("#+begin_quote" . "†")
-                                       ("#+end_quote" . "†")
-                                       ("lambda" . ?λ)
-                                       ("\forall" . ?∀)
-                                       ("\exists" . ?∃)
-                                       ("infinity" . ?∞)
-                                       ("therefore" . ?∴)
-                                       ("because" . ?∵)
-                                       ("&&" . ?∧)
-                                       ("||" . ?∨)
-                                       ("<=" . ?≤)
-                                       (">=" . ?≥)
-                                       ("<<" . ?≪)
-                                       (">>" . ?≫)
-                                       ("/=" . ?≠)
-                                       ("!=" . ?≠)
-                                       ("~>" . ?⇝)
-                                       ("<~" . ?⇜)
-                                       ("~~>" . ?⟿)
-                                       ("<=<" . ?↢)
-                                       (">=>" . ?↣)
-                                       ("->" . ?→)
-                                       ("-->" . ?⟶)
-                                       ("<-" . ?←)
-                                       ("<--" . ?⟵)
-                                       ("<=>" . ?⇔)
-                                       ("<==>" . ?⟺)
-                                       ("=>" . ?⇒)
-                                       ("==>" . ?⟹)
-                                       ("<=" . ?⇐)
-                                       ("<==" . ?⟸)
-                                       (" *** " . (?  (Br . Bl) ?⁂ (Br . Bl) ? ))
-                                       ))
-(setq prettify-symbols-unprettify-at-point 'right-edge) ;; don't form ligatures under the cursor
-(add-hook 'org-mode-hook #'prettify-symbols-mode)
-(add-hook 'prog-mode-hook #'prettify-symbols-mode)
 
 ;; Setup dired
 (use-package dired
@@ -1024,6 +1019,7 @@ If on a:
             (org-element-property :begin context)
             (org-element-property :end context)))))))
   (variable-pitch-mode 1)
+  (general-add-hook 'org-mode-hook #'taylor-gl/setup-prettify-symbols-mode)
   (auto-fill-mode 0)
   (setq org-ellipsis " ▼"
         org-directory "~/Dropbox/emacs/"
@@ -1305,19 +1301,29 @@ If on a:
   (setq css-indent-offset n) ; css-mode
   )
 
+(defun taylor-gl/setup-prettify-symbols-mode ()
+  (setq prettify-symbols-alist taylor-gl/custom-prettify-symbols-alist)
+  (setq prettify-symbols-unprettify-at-point 'right-edge) ;; don't form ligatures under the cursor
+  (prettify-symbols-mode 1)
+  )
+
 (defun taylor-gl/setup-code-mode ()
     (setq indent-tabs-mode nil)
-    (taylor-gl/setup-indent 2))
+    (taylor-gl/setup-indent 2)
+    (taylor-gl/setup-prettify-symbols-mode)
+    )
 
+;; setup ligatures and code mode settings
 (mapc
  (lambda (code-mode-hook)
    (general-add-hook code-mode-hook #'taylor-gl/setup-code-mode))
- code-mode-hooks)
+   code-mode-hooks)
+
 
 ;; Setup smart-hungry-delete
 ;; Deletes multiple whitespace characters at once
 (use-package smart-hungry-delete
-	:demand t
+  :demand t
   :general
   (:states 'insert
    "<backspace>" #'smart-hungry-delete-backward-char
