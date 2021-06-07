@@ -96,7 +96,7 @@
 (setq backup-directory-alist
       `(("." . ,"~/.emacs.d/backups")))
 (setq auto-save-file-name-transforms
-          `((".*" ,(concat user-emacs-directory "auto-save/") t)))
+          `((".*" ,(concat user-emacs-directory "auto-save-list/") t)))
 
 ;; Don't ask me for confirmation when closing buffers with running processes etc.
 (setq kill-buffer-query-functions nil)
@@ -304,7 +304,6 @@
   (global-undo-tree-mode)
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   (setq undo-tree-auto-save-history t)
-  ;; TODO large undo tree files lead to C stack overflows when opening certain files for first time after emacs startup
   )
 
 ;; =============================================================================
