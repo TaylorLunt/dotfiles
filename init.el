@@ -7,10 +7,8 @@
 ;; TODO setup <localleader>
 ;; TODO performance: use (gcc)emacs 27+ compiled against native JSON
 ;; Fix:
-;; TODO get ligatures working in programming modes
 ;; TODO get which-key paging keybindings working
 ;; TODO hl-todo causes a segfault when enabled for some reason
-;; TODO fix evil-surround
 ;; Packages:
 ;; TODO LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO LSP: setup debugger (dap-mode)
@@ -319,7 +317,6 @@
   :general
   (:states 'normal
 	   "?" #'swiper-isearch
-	   "/" #'evil-avy-goto-char-2
 	   ":" #'counsel-M-x)
   (:keymaps 'minibuffer-local-map
 	    "C-r" #'counsel-minibuffer-history)
@@ -636,6 +633,8 @@
     (evil-collection-init))
 
 ;; Setup evil-snipe
+;; evil-surround uses the s/S keybinding in visual/operator modes,
+;; so in operator mode, evil-snipe uses z/Z and x/X for sniping
 (use-package evil-snipe
   :after evil
   :demand t
@@ -671,13 +670,18 @@
 ;; E.g. ys<textobject>) will surround with (parens).
 ;; Also, ds) will delete a pair of (parens).
 (use-package evil-surround
-  :after evil
+  :after evil evil-snipe ;; after evil-snipe to override s/S keybinding
+  :demand t
   :config
   (global-evil-surround-mode 1))
 
 ;; Setup avy (for jumping)
 (use-package avy
   :after evil
+  :general
+  (:states 'normal
+           "/" #'evil-avy-goto-char-2
+           "M-*" #'avy-pop-mark)
   :demand t
   :config
   ;; avy-keys colemak (used for characters which pop up when jumping)
