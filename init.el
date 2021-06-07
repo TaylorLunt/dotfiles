@@ -1420,6 +1420,7 @@ If on a:
   :commands lsp-ivy-workspace-symbol)
 
 ;; Setup python
+(setq python-shell-interpreter "python3")
 (use-package lsp-pyright
   :demand
   :ghook ('python-mode-hook #'lsp))
