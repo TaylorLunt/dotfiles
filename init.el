@@ -4,22 +4,20 @@
 ;; NOTE if something isn't working, check if :demand should be set
 ;;
 ;; Global:
-;; TODO setup <localleader>
-;; TODO performance: use (gcc)emacs 27+ compiled against native JSON
+;; INPROGRESS setup <localleader>
 ;; Fix:
 ;; TODO get which-key paging keybindings working
 ;; TODO hl-todo causes a segfault when enabled for some reason
 ;; Packages:
 ;; TODO LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO LSP: setup debugger (dap-mode)
-;; TODO emacs-tree-sitter: better, faster syntax highlighting and structure editing(!)
-;; TODO smartparens? paredit? emacs-tree-sitter?
+;; TODO smartparens? paredit?
 ;; TODO projectile: projectile and lsp projectile integration
 ;; TODO yascroll
 ;; TODO magithub
 ;; TODO magit evil keybindings
 ;; TODO writegood mode
-;; TODO a spell checker, with settings turned to the minimum
+;; TODO a spell checker, with settings turned to the minimum. or grammarly
 ;; TODO org-noter?
 ;; TODO outline mode
 ;; TODO selectrum and icomplete?
@@ -1319,7 +1317,6 @@ If on a:
    (general-add-hook code-mode-hook #'taylor-gl/setup-code-mode))
    code-mode-hooks)
 
-
 ;; Setup smart-hungry-delete
 ;; Deletes multiple whitespace characters at once
 (use-package smart-hungry-delete
@@ -1599,8 +1596,8 @@ If on a:
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (evil-org-agenda yasnippet-snippets which-key use-package smex rainbow-delimiters org-roam org-ref org-plus-contrib org-bullets magit ivy-rich helpful general evil-org evil-numbers evil-collection evil-colemak-basics doom-themes doom-modeline crux counsel avy all-the-icons-dired))))
+   '(evil-org-agenda yasnippet-snippets which-key use-package smex rainbow-delimiters org-roam org-ref org-plus-contrib org-bullets magit ivy-rich helpful general evil-org evil-numbers evil-collection evil-colemak-basics doom-themes doom-modeline crux counsel avy all-the-icons-dired))
+ '(warning-suppress-types '((use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
