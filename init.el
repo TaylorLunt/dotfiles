@@ -325,6 +325,21 @@
   (setq counsel-find-file-ignore-regexp "\\(?:^[#.]\\)\\|\\(?:[#~]$\\)\\|\\(?:^Icon?\\)") ;; hide certain files; from doom emacs
   )
 
+;; Setup ivy-prescient for better sorting and filtering of ivy results
+(use-package prescient
+  :demand
+  :after counsel
+  :config
+  (prescient-persist-mode 1)
+  )
+
+(use-package ivy-prescient
+  :demand
+  :after counsel prescient
+  :config
+  (ivy-prescient-mode 1)
+  )
+
 ;; Setup ivy-rich
 (use-package ivy-rich
     :diminish
