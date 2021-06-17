@@ -1,50 +1,49 @@
 ;; =============================================================================
 ;; TODO
 ;; =============================================================================
-;; NOTE if something isn't working, check if :demand should be set
+;; NOTE: if something isn't working, check if :demand should be set
+;; NOTE: if a package isn't being installed, try running package-refresh-contents
 ;;
 ;; Global:
-;; INPROGRESS setup <localleader>
+;; INPROGRESS: setup <localleader>
 ;; Fix:
-;; TODO get which-key paging keybindings working
-;; TODO hl-todo causes a segfault when enabled for some reason
+;; TODO: get which-key paging keybindings working
+;; TODO: hl-todo causes a segfault when enabled for some reason
 ;; Packages:
-;; TODO LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
-;; TODO LSP: setup debugger (dap-mode)
-;; TODO smartparens? paredit?
-;; TODO projectile: projectile and lsp projectile integration
-;; TODO yascroll
-;; TODO magithub
-;; TODO magit evil keybindings
-;; TODO writegood mode
-;; TODO a spell checker, with settings turned to the minimum. or grammarly
-;; TODO org-noter?
-;; TODO outline mode
-;; TODO selectrum and icomplete?
+;; TODO: LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
+;; TODO: LSP: setup debugger (dap-mode)
+;; TODO: smartparens (not paredit)?
+;; TODO: projectile: projectile and lsp projectile integration
+;; TODO: yascroll
+;; TODO: writegood mode
+;; TODO: a spell checker, with settings turned to the minimum. or grammarly
+;; TODO: org-noter?
+;; TODO: outline mode
+;; TODO: selectrum and icomplete?
 ;; Languages: (lsp and repl at least)
-;; TODO Bash
-;; TODO C and C++
-;; TODO GDscript
-;; TODO Grammarly has lsp-mode support lol
-;; TODO HTML/CSS/Javascript/JSON
-;; TODO Haskell
-;; TODO Java
-;; TODO Markdown
-;; TODO Python: use Black for formatting
-;; TODO Rust
-;; INPROGRESS SQL
-;; INPROGRESS Latex; Latex org integration
-;; TODO XML/YAML/TOML
+;; TODO: Bash
+;; TODO: C and C++
+;; TODO: GDscript
+;; TODO: Grammarly has lsp-mode support lol
+;; TODO: HTML/CSS/Javascript/JSON
+;; TODO: Haskell
+;; TODO: Java
+;; TODO: Markdown
+;; TODO: Python: use Black for formatting
+;; TODO: Rust
+;; INPROGRESS: SQL
+;; INPROGRESS: Latex; Latex org integration
+;; TODO: XML/YAML/TOML
 ;; Ideas:
-;; TODO something like https://tonsky.me/blog/sublime-writer/, maybe using wordsmith mode
-;; TODO https://tecosaur.github.io/emacs-config/config.html
-;; TODO https://github.com/wasamasa/dotemacs/blob/master/init.org
-;; TODO https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
-;; TODO https://mstempl.netlify.app/post/beautify-org-mode/
-;; TODO https://github.com/emacs-tw/awesome-emacs#key-bindings
+;; MAYBE: something like https://tonsky.me/blog/sublime-writer/, maybe using wordsmith mode
+;; MAYBE: https://tecosaur.github.io/emacs-config/config.html
+;; MAYBE: https://github.com/wasamasa/dotemacs/blob/master/init.org
+;; MAYBE: https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
+;; MAYBE: https://mstempl.netlify.app/post/beautify-org-mode/
+;; MAYBE: https://github.com/emacs-tw/awesome-emacs#key-bindings
 
-(setq user-full-name "Taylor Lunt"
-      user-mail-address "taylorlunt@gmail.com")
+(setq user-full-name "Taylor G. Lunt"
+      user-mail-address "taylor@taylor.gl")
 ;; =============================================================================
 ;; GENERAL
 ;; =============================================================================
@@ -102,6 +101,15 @@
 ;; Scratch buffer
 (setq initial-major-mode #'fundamental-mode)
 (setq initial-scratch-message nil)
+
+;; Delete files to the trash
+(setq-default delete-by-moving-to-trash t)
+
+;; Stretch the cursor to the width of a glyph (even e.g. a tab glyph)
+(setq-default x-stretch-cursor t)
+
+;; Count words within CamelCaseWords as seperate words
+(global-subword-mode 1)
 
 ;; =============================================================================
 ;; PACKAGES AND KEYBINDINGS
@@ -184,8 +192,14 @@
         "g B" #'(magit-blame-addition :which-key "blame")
         "g g" #'(magit-status :which-key "status")
         "g G" #'(magit-status-here :which-key "status here")
+        "g e" #'(git-gutter:previous-hunk :which-key "previous hunk")
+        "g h" #'(git-gutter:mark-hunk :which-key "select hunk")
+        "g n" #'(git-gutter:next-hunk :which-key "next hunk")
+        "g r" #'(git-gutter:revert-hunk :whick-key "revert hunk")
+        "g s" #'(git-gutter:stage-hunk :whick-key "stage hunk")
+        "g t" #'(magit-todos-list :whick-key "list repo todos")
         ;; replaced by bookmarking todo.org
-        ;; TODO fix this so it works again
+        ;; TODO: fix this so it works again
         ;; "t" #'((lambda () (interactive)(counsel-find-file "~/Dropbox/emacs/todo.org")) :which-key "todo.org")
         "h" #'(:ignore t :which-key "help")
         "h b" #'(describe-personal-keybindings :which-key "describe personal keybindings")
@@ -229,6 +243,8 @@
         "s" #'(:ignore t :which-key "search")
         "s f" #'(counsel-locate :which-key "file locate")
         "s i" #'(counsel-imenu :which-key "imenu (find symbol)")
+        "s n" #'(hl-todo-next :which-key "next hl-todo symbol")
+        "s p" #'(hl-todo-previous :which-key "previous hl-todo symbol")
         "s r" #'(counsel-mark-ring :which-key "mark ring")
         "s t" #'(swiper-isearch-thing-at-point :which-key "thing at point")
         "w" #'(:ignore t :which-key "window")
@@ -257,7 +273,7 @@
   :init
   (which-key-mode)
   (setq which-key-sort-uppercase-first nil)
-  ;; TODO get these keybindings working
+  ;; TODO: get these keybindings working
   ;; :general
   ;; (:keymaps 'which-key-C-h-map
 	    ;; "j" nil
@@ -307,16 +323,22 @@
 ;; =============================================================================
 ;; INTERFACE
 ;; =============================================================================
+;; Set the window title based on save state and the buffer title (based on tecosaur's config)
+(setq frame-title-format
+      '(""
+        (:eval
+         (format (if (buffer-modified-p) "💾︎ %s" " %s") (buffer-name)))))
+
 ;; Setup counsel/ivy/swiper
 (use-package counsel ;; includes ivy and swiper
   :diminish
   :after evil
   :general
   (:states 'normal
-	   "?" #'swiper-isearch
-	   ":" #'counsel-M-x)
+           "?" #'swiper-isearch
+           ":" #'counsel-M-x)
   (:keymaps 'minibuffer-local-map
-	    "C-r" #'counsel-minibuffer-history)
+            "C-r" #'counsel-minibuffer-history)
   :demand
   :config
   (ivy-mode 1)
@@ -448,80 +470,88 @@
 
 ;; ligatures
 (setq taylor-gl/custom-prettify-symbols-alist '(
-                                   ("#+BEGIN_SRC" . "†")
-                                   ("#+END_SRC" . "†")
-                                   ("#+BEGIN_QUOTE" . "†")
-                                   ("#+END_QUOTE" . "†")
-                                   ("#+begin_src" . "†")
-                                   ("#+end_src" . "†")
-                                   ("#+begin_quote" . "†")
-                                   ("#+end_quote" . "†")
-                                   ("lambda" . ?λ)
-                                   ("infinity" . ?∞)
-                                   ("therefore" . ?∴)
-                                   ("because" . ?∵)
-                                   ("&&" . ?∧)
-                                   ("||" . ?∨)
-                                   ("<=" . ?≤)
-                                   (">=" . ?≥)
-                                   ("<<" . ?≪)
-                                   (">>" . ?≫)
-                                   ("/=" . ?≠)
-                                   ("!=" . ?≠)
-                                   ("~>" . ?⇝)
-                                   ("<~" . ?⇜)
-                                   ("~~>" . ?⟿)
-                                   ("<=<" . ?↢)
-                                   (">=>" . ?↣)
-                                   ("->" . ?→)
-                                   ("-->" . ?⟶)
-                                   ("<-" . ?←)
-                                   ("<--" . ?⟵)
-                                   ("<=>" . ?⇔)
-                                   ("<==>" . ?⟺)
-                                   ("=>" . ?⇒)
-                                   ("==>" . ?⟹)
-                                   ("<=" . ?⇐)
-                                   ("<==" . ?⟸)
-                                   (" *** " . (?  (Br . Bl) ?⁂ (Br . Bl) ? ))
-                                   ))
+                                                ("#+BEGIN_SRC" . "†")
+                                                ("#+END_SRC" . "†")
+                                                ("#+BEGIN_QUOTE" . "†")
+                                                ("#+END_QUOTE" . "†")
+                                                ("#+begin_src" . "†")
+                                                ("#+end_src" . "†")
+                                                ("#+begin_quote" . "†")
+                                                ("#+end_quote" . "†")
+                                                ("lambda" . ?λ)
+                                                ("infinity" . ?∞)
+                                                ("therefore" . ?∴)
+                                                ("because" . ?∵)
+                                                ("&&" . ?∧)
+                                                ("||" . ?∨)
+                                                ("<=" . ?≤)
+                                                (">=" . ?≥)
+                                                ("<<" . ?≪)
+                                                (">>" . ?≫)
+                                                ("/=" . ?≠)
+                                                ("!=" . ?≠)
+                                                ("~>" . ?⇝)
+                                                ("<~" . ?⇜)
+                                                ("~~>" . ?⟿)
+                                                ("<=<" . ?↢)
+                                                (">=>" . ?↣)
+                                                ("->" . ?→)
+                                                ("-->" . ?⟶)
+                                                ("<-" . ?←)
+                                                ("<--" . ?⟵)
+                                                ("<=>" . ?⇔)
+                                                ("<==>" . ?⟺)
+                                                ("=>" . ?⇒)
+                                                ("==>" . ?⟹)
+                                                ("<=" . ?⇐)
+                                                ("<==" . ?⟸)
+                                                (" *** " . (?  (Br . Bl) ?⁂ (Br . Bl) ? ))
+                                                ))
 
 ;; Setup hl-todo
-;; TODO this package causes a segfault for some reason
-;;(use-package hl-todo
-;;  :demand
-;;  :config
-;;  (global-hl-todo-mode 1)
-;;  (setq hl-todo-keyword-faces
-;;	'(("TODO"   . "#fb4932")
-;;	  ("INPROGRESS"  . "#fe8019")
-;;	  ("WAITING"  . "#fe8019")
-;;	  ("SHOULD"  . "#fabd2f")
-;;	  ("NOTE"  . "#b8bb26")
-;;	  ("MAYBE"  . "#fabd2f")
-;;	  ("DONE"  . "#a89984")
-;;	  ("ABANDONED"  . "#a89984")
-;;	  ("FIXME"  . "#fb4932")
-;;	  ("XXX"  . "#fb4932")
-;;	  ("DEBUG"  . "#fe8019")
-;;	  ("GOTCHA" . "#fb4932")
-;;	  ("STUB"   . "#fabd2f"))))
+(use-package hl-todo
+  :demand
+  :general
+  (:states '(motion normal visual operator)
+           "] t" #'hl-todo-next
+           "[ t" #'hl-todo-previous
+           )
+  :config
+  (global-hl-todo-mode 1)
+  (setq hl-todo-keyword-faces
+        '(("FIXME"   . "#fb4932")
+          ("GOTCHA"  . "#fb4932")
+          ("TODO" . "#fb4932")
+          ("XXX"  . "#fb4932")
+          ("DEBUG"  . "#fe8019")
+          ("INPROGRESS"  . "#fe8019")
+          ("REVIEW"  . "#fe8019")
+          ("WAITING"  . "#fe8019")
+          ("STUB"   . "#fabd2f")
+          ("MAYBE"  . "#fabd2f")
+          ("SHOULD"  . "#fabd2f")
+          ("HACK"  . "#b8bb26")
+          ("NOTE"  . "#b8bb26")
+          ("ABANDONED"  . "#a89984")
+	        ("DEPRECATED"  . "#a89984")
+	        ("DONE"  . "#a89984")
+          )))
 
 ;; Setup shackle for buffer/window placement
 (use-package shackle
   :demand
   :init
   (setq shackle-rules '((("^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)" "^\\*info\\*$" "\\`\\*magit-diff: .*?\\'" grep-mode "*ag search*" "*Flycheck errors*") :regexp t :align below :noselect t :size 0.3)
-			("^\\*\\(?:Wo\\)?Man " :regexp t :align right :select t)
-			("^\\*Calc" :regexp t :align below :select t :size 0.3)
-			("^\\*Alchemist" :regexp t :align below :select t :size 0.3 :same nil)
-			("^\\*lsp-help" :regexp t :select t :align bottom :size 0.2)
-			(("^\\*Warnings" "^\\*Warnings" "^\\*CPU-Profiler-Report " "^\\*Memory-Profiler-Report " "^\\*Process List\\*" "*Error*") :regexp t :align below :noselect t :size 0.2)
-			("^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail\\)\\*" :regexp t :ignore t)
-			(("*shell*" "*eshell*") :popup t :select t)
-			("^ \\*undo-tree\\*" :regexp t :other t :align right :select t :size 0.2)
-			("^\\*\\([Hh]elp\\|Apropos\\)" :regexp t :align right :select t)
-			))
+                        ("^\\*\\(?:Wo\\)?Man " :regexp t :align right :select t)
+                        ("^\\*Calc" :regexp t :align below :select t :size 0.3)
+                        ("^\\*Alchemist" :regexp t :align below :select t :size 0.3 :same nil)
+                        ("^\\*lsp-help" :regexp t :select t :align bottom :size 0.2)
+                        (("^\\*Warnings" "^\\*Warnings" "^\\*CPU-Profiler-Report " "^\\*Memory-Profiler-Report " "^\\*Process List\\*" "*Error*") :regexp t :align below :noselect t :size 0.2)
+                        ("^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail\\)\\*" :regexp t :ignore t)
+                        (("*shell*" "*eshell*") :popup t :select t)
+                        ("^ \\*undo-tree\\*" :regexp t :other t :align right :select t :size 0.2)
+                        ("^\\*\\([Hh]elp\\|Apropos\\)" :regexp t :align right :select t)
+                        ))
   (setq shackle-default-rule '(:select t :same t)) ;; reuse current window for new buffers by default
   (setq shackle-default-size 0.4)
   :config
@@ -622,22 +652,38 @@
   (add-to-list 'evil-emacs-state-modes 'eshell-mode))
 
 ;; Setup evil-collection -- evil keybindings for many modes
+(defun taylor-gl/colemak-translation (_mode mode-keymaps &rest _rest)
+      (evil-collection-translate-key 'normal mode-keymaps
+        ;; colemak hnei is qwerty hjkl
+        "n" "j"
+        "e" "k"
+        "i" "l"
+        ;; add back nei
+        ;; "j" "e"
+        ;; "k" "n"
+        ;; "l" "i"
+        ;; other evil-colemak-basics stuff -- ignore for now
+        ;; "k" "n"
+        ;; "K" "N"
+        ;; "u" "i"
+        ;; "U" "I"
+        ;; "l" "u"
+        ;; "N" "J"
+        ;; "E" "K"
+        ;; "f" "e"
+        ;; "F" "E"
+        ;; "t" "f"
+        ;; "T" "F"
+        ;; "j" "t"
+        ;; "J" "T"
+        ))
 (use-package evil-collection
-    :after evil
-    :demand
-    :config
-    (defun taylor-gl/hjkl-to-hnei (_mode mode-keymaps &rest _rest)
-    (evil-collection-translate-key nil 'evil-motion-state-map
-      ;; colemak hnei is qwerty hjkl
-      "n" "j"
-      "e" "k"
-      "i" "l"
-      ;; add back nei
-      "j" "e"
-      "k" "n"
-      "l" "i"))
-    (general-add-hook 'evil-collection-setup-hook #'taylor-gl/hjkl-to-hnei)
-    (evil-collection-init))
+  ;; check evil-collection-mode-list; remove magit and do manually
+  :after evil general
+  :ghook ('evil-collection-setup-hook #'taylor-gl/colemak-translation)
+  :demand
+  :config
+  (evil-collection-init))
 
 ;; Setup evil-snipe
 ;; evil-surround uses the s/S keybinding in visual/operator modes,
@@ -737,7 +783,7 @@
    "C-N" #'org-shiftcontroldown
    "C-E" #'org-shiftcontrolup
    "C-E" #'org-shiftcontrolright
-   ;; TODO put these in 'normal and 'visual mode maps
+   ;; TODO: put these in 'normal and 'visual mode maps
    ;; "g h" 'org-up-element
    ;; "g n" 'org-forward-element
    ;; "g e" 'org-backward-element
@@ -1244,7 +1290,7 @@ If on a:
 	  (left . "h") (right . "i")))
   )
 
-;;TODO fix this put in use-package:
+;; TODO: fix this put in use-package:
 (with-eval-after-load 'org-faces
   (dolist (face '((org-level-1)
                   (org-level-2)
@@ -1378,7 +1424,7 @@ If on a:
   (flycheck-pos-tip-mode))
 
 ;; Setup LSP-server
-;; TODO lsp-workspace-folders-add and remove -- bind to <localleader>
+;; TODO: lsp-workspace-folders-add and remove -- bind to <localleader>
 (defconst lsp-mode-hooks
   '(python-mode-hook))
 (use-package lsp-mode
@@ -1395,7 +1441,7 @@ If on a:
 	   ;; :states '(normal visual emacs)
 	   ;; :prefix "SPC"
 	   ;; :global-prefix "C-SPC"
-	   ;; TODO bind this under localleader
+	   ;; TODO: bind this under localleader
 	   ;; "l" '(:ignore t :which-key "lsp")
 	   ;; "l" lsp-command-map)
   :commands (lsp lsp-deferred)
@@ -1468,7 +1514,7 @@ If on a:
 ;; Setup elixir/phoenix
 (use-package elixir-mode
   ;; :init
-  ;; TODO (provide 'smartparens-elixir) from doom config
+  ;; TODO: (provide 'smartparens-elixir) from doom config
   )
 (use-package alchemist
   :ghook ('elixir-mode-hook #'alchemist-mode)
@@ -1532,7 +1578,7 @@ If on a:
       ))
 
 ;; Setup SQL
-;; TODO this was done in a hurry
+;; INPROGRESS: this was done in a hurry
 (use-package sql
   :mode (("\\.sql" . sql-mode)
 	 ("\\.ddl" . sql-mode)))
@@ -1543,12 +1589,12 @@ If on a:
   :ghook 'emacs-lisp-mode-hook)
 
 ;; Setup bash
-;; TODO
+;; INPROGRESS
 (use-package sh-script
   :ensure nil) ;; already installed
 
 ;; Setup LaTeX
-;; TODO this was done in a hurry
+;; INPROGRESS: this was done in a hurry
 ;; (use-package tex
 ;;   :ensure nil
 ;;   :mode ("\\.tex\\'" . LaTeX-mode)
@@ -1576,7 +1622,7 @@ If on a:
 ;;   ;; :ghook ???
 ;;   :config
 ;;   (company-auctex-init))
-;; ;; (use-package company-reftex) ;; TODO
+;; ;; (use-package company-reftex)
 ;; (use-package company-math
 ;;   :after latex
 ;;   :config
@@ -1592,11 +1638,33 @@ If on a:
 (use-package yasnippet-snippets
   :after yasnippet)
 
-;; Setup magit
+;; Setup git
 (use-package magit)
-(use-package evil-magit
-  :ensure f
-  :after magit)
+(use-package magit-todos
+  :after magit hl-todo
+  )
+(use-package git-gutter
+  :demand t
+  :init
+  :config
+  (global-git-gutter-mode t)
+  (setq git-gutter:disabled-modes '(org-mode fundamental-mode image-mode pdf-view-mode))
+  :custom
+  (git-gutter:update-interval 0.1)
+  )
+(use-package git-gutter-fringe
+  :demand t
+  :after git-gutter
+  :config
+  (setq-default fringes-outside-margins t)
+  ;; thin fringe bitmaps
+  (define-fringe-bitmap 'git-gutter-fr:added [224]
+    nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224]
+    nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240]
+    nil nil 'bottom)
+  )
 
 ;; =============================================================================
 ;; CUSTOM FUNCTIONS (from doom emacs if they start with +)
