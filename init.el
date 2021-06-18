@@ -11,7 +11,6 @@
 ;; TODO: LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO: LSP: setup debugger (dap-mode)
 ;; TODO: smartparens (not paredit)?
-;; TODO: projectile: projectile and lsp projectile integration
 ;; TODO: yascroll
 ;; TODO: writegood mode
 ;; TODO: a spell checker, with settings turned to the minimum. or grammarly
@@ -114,6 +113,7 @@
 ;; =============================================================================
 ;; Set up straight.el and use-package for package management
 (setq straight-use-package-by-default t)
+;; bootstrap boilerplate needed to install straight.el:
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -1526,6 +1526,12 @@ If on a:
   ;; TODO: (provide 'smartparens-elixir) from doom config
   )
 (use-package alchemist
+  ;; NOTE currently using a local version of alchemist which I patched using a github pull request
+  ;; for a bug which has not been merged into the main package. When the merge occurs, I will
+  ;; go back to the elpa package. (The patch allows alchemist to use new Phoenix 3 dir structure.)
+  ;; NOTE you can get a patch from a gitub pull request by appending ".patch" to the URL!
+  ;; NOTE in order for the Phoenix commands to work, the Phoenix project must be in a folder matching
+  ;; the name of the project.
   :ghook ('elixir-mode-hook #'alchemist-mode)
   :init
   (taylor-gl/localleader-def-create! alchemist-mode-map
