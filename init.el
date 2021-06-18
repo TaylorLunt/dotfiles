@@ -420,7 +420,6 @@
 
 ;; Setup whitespace (to visualize trailing whitespace etc.)
 (use-package whitespace
-  :ensure f
   :demand
   :init
   (global-whitespace-mode)
@@ -1606,14 +1605,12 @@ If on a:
 ;; Setup LaTeX
 ;; INPROGRESS: this was done in a hurry
 ;; (use-package tex
-;;   :ensure nil
 ;;   :mode ("\\.tex\\'" . LaTeX-mode)
 ;;   :init
 ;;   (setq TeX-parse-self t)
 ;;   (setq TeX-auto-save t)
 ;;   )
 ;; (use-package latex
-;;   :ensure nil
 ;;   :config
 ;;   (setq ispell-parser 'tex))
 
