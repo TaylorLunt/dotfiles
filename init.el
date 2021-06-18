@@ -2,7 +2,6 @@
 ;; TODO
 ;; =============================================================================
 ;; NOTE: if something isn't working, check if :demand should be set
-;; NOTE: if a package isn't being installed, try running package-refresh-contents
 ;;
 ;; Global:
 ;; INPROGRESS: setup <localleader>
@@ -11,7 +10,6 @@
 ;; Packages:
 ;; TODO: LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO: LSP: setup debugger (dap-mode)
-;; TODO: switch to straight.el for packages: allows you to use any git branch for package etc.
 ;; TODO: smartparens (not paredit)?
 ;; TODO: projectile: projectile and lsp projectile integration
 ;; TODO: yascroll
@@ -114,22 +112,23 @@
 ;; =============================================================================
 ;; PACKAGES AND KEYBINDINGS
 ;; =============================================================================
-;; Set up use-package
-(require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-    ("org" . "https://orgmode.org/elpa/")
-    ("elpa" . "https://elpa.gnu.org/packages/")))
-;; fix a bug relating to downloading packages: (probably not required after emacs 26.3)
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-(package-initialize)
-(unless package-archive-contents
-    (package-refresh-contents))
+;; Set up straight.el and use-package for package management
+(setq straight-use-package-by-default t)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(unless (package-installed-p 'use-package)
-    (package-install 'use-package))
-(require 'use-package)
+(straight-use-package 'use-package)
 (setq use-package-always-defer t)
-(setq use-package-always-ensure t)
 
 ;; Setup general -- better keybindings and leader key
 ;; Use like this in use-package blocks to define mode-specific keybindings under <localleader> (SPC m):
@@ -442,21 +441,21 @@
 
 ;; Setup hl-line (highlights the current line)
 (use-package hl-line
-  :ensure nil ;; already installed with emacs
+  :straight (:type built-in)
   :demand
   :config
   (global-hl-line-mode 1))
 
 ;; Setup paren
 (use-package paren
-  :ensure nil ;; already installed
+  :straight (:type built-in)
   :demand
   :config
   (show-paren-mode +1))
 
 ;; Setup saveplace (saves place in file)
 (use-package saveplace
-  :ensure nil ;; already installed
+  :straight (:type built-in)
   :demand
   :init
   (save-place-mode t)
@@ -561,7 +560,7 @@
 
 ;; Setup dired
 (use-package dired
-  :ensure nil ;; already installed
+  :straight (:type built-in)
   :ghook ('dired-mode-hook #'dired-hide-details-mode)
   :config
   (setq dired-dwim-target t)
@@ -574,7 +573,7 @@
 
 (use-package dired-x
   :after dired
-  :ensure nil ;; already installed
+  :straight (:type built-in)
   :ghook ('dired-mode-hook #'dired-omit-mode)
   :config
   (dired-omit-mode t)
@@ -1602,7 +1601,7 @@ If on a:
 ;; Setup bash
 ;; INPROGRESS
 (use-package sh-script
-  :ensure nil) ;; already installed
+  :straight (:type built-in))
 
 ;; Setup LaTeX
 ;; INPROGRESS: this was done in a hurry
