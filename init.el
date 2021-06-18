@@ -8,10 +8,10 @@
 ;; INPROGRESS: setup <localleader>
 ;; Fix:
 ;; TODO: get which-key paging keybindings working
-;; TODO: hl-todo causes a segfault when enabled for some reason
 ;; Packages:
 ;; TODO: LSP: better keybindings for some lsp functionality like lsp-find-definition, lsp-find-references, etc.
 ;; TODO: LSP: setup debugger (dap-mode)
+;; TODO: switch to straight.el for packages: allows you to use any git branch for package etc.
 ;; TODO: smartparens (not paredit)?
 ;; TODO: projectile: projectile and lsp projectile integration
 ;; TODO: yascroll
