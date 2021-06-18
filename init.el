@@ -218,6 +218,7 @@
         "i s" #'(yas-insert-snippet :which-key "insert snippet")
         "i x" #'(crux-delete-buffer-and-file :which-key "delete current buffer file")
         "m" #'(:ignore t :which-key "<localleader>")
+        "p" #'(projectile-command-map :which-key "project")
         "u" #'(:ignore t :which-key "undo")
         "u l" #'(undo-tree-undo :which-key "undo (last)")
         "u r" #'(undo-tree-redo :which-key "redo")
