@@ -208,7 +208,7 @@
         "h f" #'(helpful-function :which-key "describe function")
         "h k" #'(describe-key-briefly :which-key "describe key")
         "h K" #'(helpful-key :which-key "describe key in depth")
-        "h m" #'(helpful-mode :which-key "describe modes")
+        "h m" #'(describe-mode :which-key "describe modes")
         "h M" #'(+default/man-or-woman :which-key "man page")
         "h v" #'(helpful-variable :which-key "describe variable")
         "i" #'(:ignore t :which-key "insert")
