@@ -1378,6 +1378,16 @@ If on a:
    (general-add-hook code-mode-hook #'taylor-gl/setup-code-mode))
    code-mode-hooks)
 
+;; setup projectile
+(use-package projectile
+  :demand t
+  :general
+  (:keymaps 'projectile-command-map
+   "ESC" nil)
+  :config
+  (projectile-mode t)
+  )
+
 ;; Setup smart-hungry-delete
 ;; Deletes multiple whitespace characters at once
 (use-package smart-hungry-delete
