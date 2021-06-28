@@ -32,6 +32,9 @@ alias rm=' timeout 3 rm -Iv --one-file-system'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+# colored ls with icons
+alias ls='lsd'
+
 # add ~/.scripts to path
 PATH=$PATH:~/.scripts:.
 
